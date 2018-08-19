@@ -76,6 +76,17 @@ func DeleteNumberEndpoint(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, resp)
 }
 
+func respondWithError(w http.ResponseWriter, code int, msg string) {
+	respondWithJson(w, code, map[string]string{"error": msg})
+}
+
+func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
+	response, _ := json.Marshal(payload)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	w.Write(response)
+}
+
 func initialize() {
 	dao.host = "127.0.0.1"
 	dao.name = "gosharing"
@@ -92,21 +103,6 @@ func initialize() {
 func main() {
 
 	initialize()
-
-	//num := Number{"1234", "AU"}
-	//nums := []Number{}
-	//fmt.Println(num.DID)
-	//fmt.Println(num.ISOCC)
-	//err := dao.AddNumber(num)
-	//fmt.Print(err)
-
-	//nums, err = dao.GetNumber(num)
-	//fmt.Print(nums)
-	//fmt.Print(err)
-
-	//err = dao.DeleteNumber(num)
-	//fmt.Println(err)
-
 	r := mux.NewRouter()
 	r.HandleFunc("/numbers/{prefix}", GetNumberEndpoint).Methods("GET")
 	r.HandleFunc("/numbers", AddNumberEndpoint).Methods("POST")
