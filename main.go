@@ -21,9 +21,10 @@ func GetNumberEndpoint(w http.ResponseWriter, r *http.Request) {
 	nums, err = dao.GetNumber(num)
 	if err != nil {
 		respondWithError(w, http.StatusServiceUnavailable, err.Error())
-	} else {
-		respondWithJson(w, http.StatusOK, nums)
+		return
 	}
+	respondWithJson(w, http.StatusOK, nums)
+
 }
 
 //AddNumberEndpoint ...
@@ -42,7 +43,14 @@ func AddNumberEndpoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	respondWithJson(w, http.StatusOK, nil)
+
+	var resp Response
+	resp.CODE = http.StatusOK
+	resp.DATA = num.DID
+	resp.MSG = "Number Added with Sucess"
+	fmt.Print(resp)
+	respondWithJson(w, http.StatusOK, resp)
+
 }
 
 //DeleteNumberEndpoint ...
@@ -60,7 +68,12 @@ func DeleteNumberEndpoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	respondWithJson(w, http.StatusOK, nil)
+	var resp Response
+	resp.CODE = http.StatusOK
+	resp.DATA = num.DID
+	resp.MSG = "Number Deleted with Sucess"
+	fmt.Print(resp)
+	respondWithJson(w, http.StatusOK, resp)
 }
 
 func initialize() {

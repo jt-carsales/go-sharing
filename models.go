@@ -8,7 +8,7 @@ type Number struct {
 
 //Response ...
 type Response struct {
-	msg    string   `json:"msg"`
-	status string   `json:"status"`
-	data   []Number `json:"data"`
+	MSG  string `json:"msg"`
+	CODE int    `json:"status"`
+	DATA string `json:"data"`
 }
