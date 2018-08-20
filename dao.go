@@ -30,6 +30,27 @@ func (db *DBconn) ConnectDB() error {
 	return nil
 }
 
+//GetNumbers ...
+func (db *DBconn) GetNumbers() ([]Number, error) {
+	var nums []Number
+	var num Number
+	query := "SELECT * FROM numbers ORDER BY isocc asc LIMIT 50 "
+	res, err := db.conn.Query(query)
+	if err != nil {
+		fmt.Println(fmt.Sprint(err))
+		return nil, err
+	}
+	for res.Next() {
+		err = res.Scan(&num.DID, &num.ISOCC)
+		if err != nil {
+			fmt.Println(fmt.Sprint(err))
+			return nil, err
+		}
+		nums = append(nums, num)
+	}
+	return nums, err
+}
+
 //GetNumber ...
 func (db *DBconn) GetNumber(number Number) ([]Number, error) {
 	var nums []Number

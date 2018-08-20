@@ -11,6 +11,26 @@ import (
 
 var dao = DBconn{}
 
+//GetNumbersEndpoint ...
+func GetNumbersEndpoint(w http.ResponseWriter, r *http.Request) {
+
+	nums := []Number{}
+	var err error
+	nums, err = dao.GetNumbers()
+	if err != nil {
+		respondWithError(w, http.StatusServiceUnavailable, err.Error())
+		return
+	}
+
+	var resp Response
+	resp.CODE = http.StatusOK
+	resp.DATA = nums
+	resp.MSG = "Done"
+	fmt.Print(resp)
+	respondWithJson(w, http.StatusOK, resp)
+
+}
+
 //GetNumberEndpoint ...
 func GetNumberEndpoint(w http.ResponseWriter, r *http.Request) {
 
@@ -23,7 +43,13 @@ func GetNumberEndpoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusServiceUnavailable, err.Error())
 		return
 	}
-	respondWithJson(w, http.StatusOK, nums)
+
+	var resp Response
+	resp.CODE = http.StatusOK
+	resp.DATA = nums
+	resp.MSG = "Done"
+	fmt.Print(resp)
+	respondWithJson(w, http.StatusOK, resp)
 
 }
 
@@ -44,10 +70,13 @@ func AddNumberEndpoint(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var nums []Number
+	nums = append(nums, num)
+
 	var resp Response
 	resp.CODE = http.StatusOK
-	resp.DATA = num.DID
-	resp.MSG = "Number Added with Sucess"
+	resp.DATA = nums
+	resp.MSG = "Number added successfully"
 	fmt.Print(resp)
 	respondWithJson(w, http.StatusOK, resp)
 
@@ -68,10 +97,14 @@ func DeleteNumberEndpoint(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
+
+	var nums []Number
+	nums = append(nums, num)
+
 	var resp Response
 	resp.CODE = http.StatusOK
-	resp.DATA = num.DID
-	resp.MSG = "Number Deleted with Sucess"
+	resp.DATA = nums
+	resp.MSG = "Number deleted successfully"
 	fmt.Print(resp)
 	respondWithJson(w, http.StatusOK, resp)
 }
@@ -104,6 +137,8 @@ func main() {
 
 	initialize()
 	r := mux.NewRouter()
+	r.HandleFunc("/", GetNumbersEndpoint).Methods("GET")
+	r.HandleFunc("/numbers", GetNumbersEndpoint).Methods("GET")
 	r.HandleFunc("/numbers/{prefix}", GetNumberEndpoint).Methods("GET")
 	r.HandleFunc("/numbers", AddNumberEndpoint).Methods("POST")
 	r.HandleFunc("/numbers", DeleteNumberEndpoint).Methods("DELETE")
